@@ -1,0 +1,28 @@
+.categories {
+    min-height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.categories__wrapper {
+    width: 60vw;
+}
+
+.categories__header {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.categories__button {
+    padding: 1vh 3vh 1vh 3vh;
+}
+
+.categories__button:hover {
+    background-color: #F0F0F0;
+}
+
+.categories__body {
+    min-height: 100%;
+    border: 1px grey solid;
+    padding: 1vh 3vh 1vh 3vh;
+}

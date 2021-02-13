@@ -1,3 +1,16 @@
 .app {
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
+
+.app__header {
+    padding: 2vh 0 0 20vw;
+    height: 12vh;
+}
+
+.app__body {
+    height: 88vh;
+}
+
+.app__logo { width: 15vw; }
