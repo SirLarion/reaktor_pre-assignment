@@ -17,6 +17,10 @@
     padding: 1vh 3vh 1vh 3vh;
 }
 
+.categories__button--active {
+    background-color: #F0F0F0;
+}
+
 .categories__button:hover {
     background-color: #F0F0F0;
 }
