@@ -26,17 +26,18 @@ const CategoryList: React.FC = () => {
     useEffect(() => {
         console.log('Loading products...');
         let categoriesNew = categories;
-        categoryNames.forEach(categoryName => {
-            const catName = categoryName.toLowerCase();
-            const productsNew = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(num => catName.slice(0, -1));
-            categoriesNew.push({name: categoryName, products: productsNew});
-            /*
-            getCategory(category.name)
-                .then(res => {
-                    console.log(res);
-                })
-            */
-        });
+        //categoryNames.forEach(categoryName => {
+        //const catName = categoryName.toLowerCase();
+        const catName = 'beanies';
+        /*
+        const productsNew = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(num => catName.slice(0, -1));
+        categoriesNew.push({name: categoryName, products: productsNew});
+        */
+        getCategory(catName)
+            .then(res => {
+                console.log(res);
+            })
+        //});
         setCategories(categoriesNew);
     }, []);
 
