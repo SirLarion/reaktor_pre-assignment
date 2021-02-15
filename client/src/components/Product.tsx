@@ -1,7 +1,9 @@
-const Product: React.FC = () => {
+import { ProductType } from '../types';
+
+const Product: React.FC<{product: ProductType}> = ({product}) => {
     return (
         <div className='product'>
-            I am product
+            {product.name}
         </div>
     );
 }

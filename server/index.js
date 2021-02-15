@@ -30,7 +30,10 @@ function getAvailabilityData(manufacturers) {
     return Promise.all(resPromises)
 }
 
+/* Get avalability of products corresponding to each manufacturer in 'manufacturers' 
+ * and merge with product data */
 function joinAPIdata(products, manufacturers) {
+    // TODO: Rejection?
     return new Promise((resolve, reject) => {
         let joinedData = [];
         let availabilities = new Map();
@@ -38,13 +41,17 @@ function joinAPIdata(products, manufacturers) {
         getAvailabilityData(manufacturers)
             .then(responses => {
                 responses.forEach(res => {
-                    console.log(res);
                     try {
                         const dataPoints = res.data.response;
-                        dataPoints.forEach(d => availabilities.set(d['id'].toLowerCase(), d['DATAPAYLOAD']));
+                        // Check for array truthiness before attempting iteration
+                        if(dataPoints.length) {
+                            dataPoints.forEach(d => availabilities.set(d['id'].toLowerCase(), d['DATAPAYLOAD']));
+                        }
                     }
                     catch(err) {
-                        console.log('Burjaborja');
+                        // TODO: Better error response
+                        console.log(res);
+                        console.log(err);
                     }
                 });
                 joinedData = products.map(product => {
@@ -68,8 +75,6 @@ app.get('/:category', (request, response) => {
         .catch(err => {
             response.status(404).end();
         });
-
-    //const products = getAPIdata(category);
 });
 
 app.listen(PORT, () => {

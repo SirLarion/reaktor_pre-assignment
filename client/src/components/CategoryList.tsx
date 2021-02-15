@@ -3,52 +3,83 @@ import { useState, useEffect } from 'react';
 import ProductList from './ProductList';
 import CategoryNav from './CategoryNav';
 
-import { getCategory, getAvailability } from '../utils/ProductServices';
+import { getCategoryFromAPI } from '../utils/ProductServices';
 import { CategoryType } from '../types';
 
 import '../css/categorylist.css';
 
-function toCategory(name: string, index: number) {
-    return (
-        <div key={index}>
-            <CategoryNav name={name} />
-        </div>
-    );
+function getNewCategory(newCategory: string): Promise<CategoryType> {
+    // TODO: Rejection?
+    return new Promise((resolve, reject) => {
+        getCategoryFromAPI('gloves')
+            .then(res => {
+                const category: CategoryType = {
+                    name: newCategory,
+                    products: res
+                };
+                resolve(category);
+            });
+    });
 }
 
 const CategoryList: React.FC = () => {
 
     const categoryNames = ['Gloves', 'Facemasks', 'Beanies'];
 
-    const categoriesInitial: CategoryType[] = [];
-    const [categories, setCategories] = useState(categoriesInitial);
+    const initialCategory: CategoryType = {
+        name: '',
+        products: []
+    }
+    const [activeCategory, setCategory] = useState(initialCategory);
 
     useEffect(() => {
         console.log('Loading products...');
-        let categoriesNew = categories;
-        //categoryNames.forEach(categoryName => {
-        //const catName = categoryName.toLowerCase();
-        const catName = 'beanies';
-        /*
-        const productsNew = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(num => catName.slice(0, -1));
-        categoriesNew.push({name: categoryName, products: productsNew});
-        */
-        getCategory(catName)
-            .then(res => {
-                console.log(res);
-            })
-        //});
-        setCategories(categoriesNew);
+        getNewCategory(categoryNames[0].toLowerCase())
+            .then(category => {
+                setCategory(category);
+            });
+        const initialActive = document.getElementById(categoryNames[0])
+        if(initialActive) initialActive.className = 'categories__button button--active';
     }, []);
+
+    const handleCategoryChange = (event: React.MouseEvent): void => {
+        event.preventDefault();
+        const targetName = event.currentTarget.textContent;
+        console.log(targetName);
+        if(targetName && activeCategory.name !== targetName) {
+            // Change to empty category before loading the new one
+            setCategory(initialCategory);
+
+            document.getElementsByClassName('button--active')[0].className = 'categories__button';
+            event.currentTarget.className = 'categories__button button--active';
+
+            getNewCategory(targetName.toLowerCase())
+                .then(category => {
+                    setCategory(category);
+                });
+
+        }
+    }
 
     return (
         <div className='categories'>
             <div className='categories__wrapper'>
                 <div className='categories__header'>
-                    { categoryNames.map(toCategory) }
+                    { 
+                        categoryNames.map((name: string, i: number) => {
+                            return (
+                                <div key={i}>
+                                    <CategoryNav 
+                                        name={name}          
+                                        handleClick={handleCategoryChange}
+                                    />
+                                </div>
+                            );
+                        }) 
+                    }
                 </div>
                 <div className='categories__body'>
-                    <ProductList />
+                    <ProductList products={activeCategory.products} />
                 </div>
             </div>
         </div>

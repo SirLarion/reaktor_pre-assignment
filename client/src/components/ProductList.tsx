@@ -1,25 +1,20 @@
-//import Product from './Product';
+import Product from './Product';
+import { ProductType } from '../types';
 
 import '../css/productlist.css';
 
-function toProduct(index: number) {
+function toProduct(product: ProductType, index: number) {
     return (
         <div key={index}>
-            <div className='product'>
-                I am product
-            </div>
-            {/*<Product />*/}
+            <Product product={product} />
         </div>
     );
 }
 
-const ProductList: React.FC = () => {
-
-    const items = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-
+const ProductList: React.FC<{products: ProductType[]}> = ({products}) => {
     return (
         <div className='list'>
-            {items.map(toProduct)}
+            {products.map(toProduct)}
         </div>
     );
 }

@@ -1,7 +1,17 @@
-const CategoryNav: React.FC<{name: string}> = ({name}) => {
+import '../css/categorylist.css';
+
+interface Props {
+    name: string;
+    handleClick: (event: React.MouseEvent) => void;
+}
+
+const CategoryNav: React.FC<Props> = ({name, handleClick}) => {
     return (
         <div 
-            className='categories__button'>
+            id={name}
+            className='categories__button'
+            onClick={handleClick}
+        >
             { name }
         </div>
     );
