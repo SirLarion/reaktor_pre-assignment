@@ -11,6 +11,12 @@ const URL = config.URL;
 
 app.use(cors());
 
+let internalCache = {
+    gloves: [],
+    facemasks: [],
+    beanies: []
+}
+
 function parseManufacturers(products) {
     const manufacturers = new Set();
     products.forEach(p => {
@@ -20,7 +26,7 @@ function parseManufacturers(products) {
 }
 
 function getAvailabilityData(manufacturers) {
-    let resPromises = [];
+    const resPromises = [];
 
     manufacturers.forEach(manu => {
         const res = axios.get(`${URL}/availability/${manu}`);
@@ -61,8 +67,8 @@ function joinAPIdata(products, manufacturers) {
             });
     });
 }
- 
-app.get('/:category', (request, response) => {
+
+app.get('/:category/initial', (request, response) => {
     const category = request.params.category;
     response.header("Access-Control-Allow-Origin", "*");
     axios.get(`${URL}/products/${category}`)
@@ -70,11 +76,24 @@ app.get('/:category', (request, response) => {
             const products = res.data;
             const manufacturers = parseManufacturers(products);
             joinAPIdata(products, manufacturers)
-                .then(data => response.json(data));
+                .then(data => {
+                    internalCache[category] = data;
+                    response.json(data)
+                });
         })
         .catch(err => {
             response.status(404).end();
         });
+});
+ 
+app.get('/:category', (request, response) => {
+    const category = request.params.category;
+    if(internalCache[category].length) {
+        response.json(internalCache[category]);
+    }
+    else {
+        response.status(404).end();
+    }
 });
 
 app.listen(PORT, () => {

@@ -15,10 +15,18 @@
 
 .categories__button {
     padding: 1vh 3vh 1vh 3vh;
+   -webkit-touch-callout: none; 
+     -webkit-user-select: none; 
+      -khtml-user-select: none; 
+        -moz-user-select: none; 
+         -ms-user-select: none; 
+             user-select: none; 
+
 }
 
 .categories__button:hover {
     background-color: #F0F0F0;
+
 }
 
 .button--active {

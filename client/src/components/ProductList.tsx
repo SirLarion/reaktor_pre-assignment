@@ -1,3 +1,5 @@
+import InfiniteScroll from 'react-infinite-scroller';
+
 import Product from './Product';
 import { ProductType } from '../types';
 

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import ProductList from './ProductList';
 import CategoryNav from './CategoryNav';
 
-import { getCategoryFromAPI } from '../utils/ProductServices';
+import { initialAPIcall, getCategoryFromAPI } from '../utils/ProductServices';
 import { CategoryType } from '../types';
 
 import '../css/categorylist.css';
@@ -11,7 +11,7 @@ import '../css/categorylist.css';
 function getNewCategory(newCategory: string): Promise<CategoryType> {
     // TODO: Rejection?
     return new Promise((resolve, reject) => {
-        getCategoryFromAPI('gloves')
+        getCategoryFromAPI(newCategory)
             .then(res => {
                 const category: CategoryType = {
                     name: newCategory,
@@ -34,12 +34,18 @@ const CategoryList: React.FC = () => {
 
     useEffect(() => {
         console.log('Loading products...');
-        getNewCategory(categoryNames[0].toLowerCase())
-            .then(category => {
+        initialAPIcall(categoryNames)
+            .then(res => {
+                const category: CategoryType = {
+                    name: categoryNames[0],
+                    products: res
+                };
                 setCategory(category);
             });
         const initialActive = document.getElementById(categoryNames[0])
-        if(initialActive) initialActive.className = 'categories__button button--active';
+        if(initialActive) {
+            initialActive.className = 'categories__button button--active';
+        }
     }, []);
 
     const handleCategoryChange = (event: React.MouseEvent): void => {

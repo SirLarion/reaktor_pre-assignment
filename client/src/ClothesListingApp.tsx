@@ -9,7 +9,11 @@ const ClothesListingApp: React.FC = () => {
     return (
         <div className='app'>
             <div className='app__header'>
-                <img className='app__logo' src={logo} alt='Clothes Brand' />
+                <img 
+                    className='app__logo noselect' 
+                    src={logo} 
+                    alt='Clothes Brand' 
+                />
             </div>
             <div className='app__body'>
                 <CategoryList />
