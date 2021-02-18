@@ -1,9 +1,10 @@
 import { ProductType } from '../types';
 
 const Product: React.FC<{product: ProductType}> = ({product}) => {
+    const nameRaw: string = product.name;
     return (
         <div className='product'>
-            {product.name}
+            {nameRaw[0] + nameRaw.substring(1).toLowerCase()}
         </div>
     );
 }

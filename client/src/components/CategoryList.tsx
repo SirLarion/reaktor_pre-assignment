@@ -3,21 +3,36 @@ import { useState, useEffect } from 'react';
 import ProductList from './ProductList';
 import CategoryNav from './CategoryNav';
 
-import { initialAPIcall, getCategoryFromAPI } from '../utils/ProductServices';
-import { CategoryType } from '../types';
+import { getCategoryFromAPI } from '../utils/ProductServices';
+import { ProductType, CategoryType } from '../types';
+import { listDisplayLength } from '../utils/constants';
 
 import '../css/categorylist.css';
 
-function getNewCategory(newCategory: string): Promise<CategoryType> {
-    // TODO: Rejection?
+function getNewCategory(newCategoryName: string): Promise<CategoryType> {
     return new Promise((resolve, reject) => {
-        getCategoryFromAPI(newCategory)
+        getCategoryFromAPI(newCategoryName, 0, listDisplayLength)
             .then(res => {
                 const category: CategoryType = {
-                    name: newCategory,
+                    name: newCategoryName,
                     products: res
                 };
                 resolve(category);
+            })
+            .catch(res => {
+                reject(res);
+            });
+    });
+}
+
+function getMoreSameCategory(categoryName: string, start: number): Promise<ProductType[]> {
+    return new Promise((resolve, reject) => {
+        getCategoryFromAPI(categoryName, start, start+listDisplayLength)
+            .then(res => {
+                resolve(res);
+            })
+            .catch(res => {
+                reject(res);
             });
     });
 }
@@ -25,22 +40,17 @@ function getNewCategory(newCategory: string): Promise<CategoryType> {
 const CategoryList: React.FC = () => {
 
     const categoryNames = ['Gloves', 'Facemasks', 'Beanies'];
+    const initialProducts: ProductType[] = [];
 
-    const initialCategory: CategoryType = {
-        name: '',
-        products: []
-    }
-    const [activeCategory, setCategory] = useState(initialCategory);
+    const [activeCategory, setCategory] = useState(categoryNames[0].toLowerCase());
+    const [products, setProducts] = useState(initialProducts);
+    const [hasProducts, setHasProducts] = useState(true);
 
     useEffect(() => {
         console.log('Loading products...');
-        initialAPIcall(categoryNames)
+        getNewCategory(activeCategory)
             .then(res => {
-                const category: CategoryType = {
-                    name: categoryNames[0],
-                    products: res
-                };
-                setCategory(category);
+                setProducts(res.products);
             });
         const initialActive = document.getElementById(categoryNames[0])
         if(initialActive) {
@@ -51,20 +61,30 @@ const CategoryList: React.FC = () => {
     const handleCategoryChange = (event: React.MouseEvent): void => {
         event.preventDefault();
         const targetName = event.currentTarget.textContent;
-        console.log(targetName);
-        if(targetName && activeCategory.name !== targetName) {
-            // Change to empty category before loading the new one
-            setCategory(initialCategory);
+        if(targetName && activeCategory !== targetName) {
+            // Change to empty product list before loading the new one
+            setHasProducts(true);
+            setProducts(initialProducts);
 
             document.getElementsByClassName('button--active')[0].className = 'categories__button';
             event.currentTarget.className = 'categories__button button--active';
 
             getNewCategory(targetName.toLowerCase())
                 .then(category => {
-                    setCategory(category);
+                    setCategory(category.name);
+                    setProducts(category.products);
                 });
-
         }
+    }
+
+    const handleLoadMoreProducts = (): void => {
+        getMoreSameCategory(activeCategory.toLowerCase(), products.length)
+            .then(res => {
+                setProducts(products.concat(res));
+            })
+            .catch(err => {
+                setHasProducts(false);
+            });
     }
 
     return (
@@ -85,7 +105,11 @@ const CategoryList: React.FC = () => {
                     }
                 </div>
                 <div className='categories__body'>
-                    <ProductList products={activeCategory.products} />
+                    <ProductList 
+                        products={products} 
+                        loadMore={handleLoadMoreProducts}
+                        hasMore={hasProducts}
+                    />
                 </div>
             </div>
         </div>

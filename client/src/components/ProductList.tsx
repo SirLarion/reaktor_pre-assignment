@@ -1,7 +1,11 @@
-import InfiniteScroll from 'react-infinite-scroller';
+import { useState } from 'react';
+
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import Product from './Product';
+
 import { ProductType } from '../types';
+import { listDisplayLength } from '../utils/constants';
 
 import '../css/productlist.css';
 
@@ -13,10 +17,23 @@ function toProduct(product: ProductType, index: number) {
     );
 }
 
-const ProductList: React.FC<{products: ProductType[]}> = ({products}) => {
+interface Props {
+    products: ProductType[];
+    loadMore: () => void;
+    hasMore: boolean;
+}
+
+const ProductList: React.FC<Props> = ({products, loadMore, hasMore}) => {
     return (
         <div className='list'>
-            {products.map(toProduct)}
+            <InfiniteScroll
+                dataLength={products.length}
+                next={loadMore}
+                hasMore={hasMore}
+                loader={<div>Loading...</div>}
+            >
+                {products.map(toProduct)}
+            </InfiniteScroll>
         </div>
     );
 }

@@ -11,6 +11,8 @@ const URL = config.URL;
 
 app.use(cors());
 
+const categoryNames = ['gloves', 'facemasks', 'beanies'];
+
 let internalCache = {
     gloves: [],
     facemasks: [],
@@ -23,6 +25,10 @@ function parseManufacturers(products) {
         manufacturers.add(p['manufacturer']);
     });
     return manufacturers;
+}
+
+function getProductData(category) {
+    return axios.get(`${URL}/products/${category}`);
 }
 
 function getAvailabilityData(manufacturers) {
@@ -50,14 +56,11 @@ function joinAPIdata(products, manufacturers) {
                     try {
                         const dataPoints = res.data.response;
                         // Check for array truthiness before attempting iteration
-                        if(dataPoints.length) {
-                            dataPoints.forEach(d => availabilities.set(d['id'].toLowerCase(), d['DATAPAYLOAD']));
-                        }
+                        dataPoints.forEach(d => availabilities.set(d['id'].toLowerCase(), d['DATAPAYLOAD']));
                     }
                     catch(err) {
                         // TODO: Better error response
-                        console.log(res);
-                        console.log(err);
+                        //console.log(err);
                     }
                 });
                 joinedData = products.map(product => {
@@ -68,28 +71,35 @@ function joinAPIdata(products, manufacturers) {
     });
 }
 
-app.get('/:category/initial', (request, response) => {
-    const category = request.params.category;
-    response.header("Access-Control-Allow-Origin", "*");
-    axios.get(`${URL}/products/${category}`)
-        .then(res => {
-            const products = res.data;
-            const manufacturers = parseManufacturers(products);
-            joinAPIdata(products, manufacturers)
-                .then(data => {
-                    internalCache[category] = data;
-                    response.json(data)
-                });
-        })
-        .catch(err => {
-            response.status(404).end();
-        });
-});
+function makeExternalAPIcall() {
+    // TODO: Catch errors
+    for(i = 0; i < categoryNames.length; i++) {
+        const category = categoryNames[i];
+        getProductData(category)
+            .then(res => {
+                const products = res.data;
+                const manufacturers = parseManufacturers(products);
+                joinAPIdata(products, manufacturers)
+                    .then(data => {
+                        internalCache[category] = data;
+                    });
+            });
+    }
+    setTimeout(makeExternalAPIcall, 300000); 
+}
  
-app.get('/:category', (request, response) => {
-    const category = request.params.category;
-    if(internalCache[category].length) {
-        response.json(internalCache[category]);
+app.get('/:category/:sindex/:eindex', (request, response) => {
+
+    const category   = request.params.category;
+    const startIndex = request.params.sindex;
+    const endIndex   = request.params.eindex;
+
+    const resData = internalCache[category].slice(startIndex, endIndex);
+
+    response.header("Access-Control-Allow-Origin", "*");
+
+    if(resData.length && resData.length > 0) {
+        response.json(resData);
     }
     else {
         response.status(404).end();
@@ -98,4 +108,5 @@ app.get('/:category', (request, response) => {
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    makeExternalAPIcall();
 });

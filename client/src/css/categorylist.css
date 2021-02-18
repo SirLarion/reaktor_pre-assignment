@@ -11,10 +11,14 @@
 .categories__header {
     display: flex;
     justify-content: flex-start;
+    margin-bottom: 0.5vmin;
 }
 
 .categories__button {
     padding: 1vh 3vh 1vh 3vh;
+    margin-right: 0.5vmin;
+    border-radius: 0.5vmin;
+    background-color: var(--button-bg);
    -webkit-touch-callout: none; 
      -webkit-user-select: none; 
       -khtml-user-select: none; 
@@ -25,12 +29,12 @@
 }
 
 .categories__button:hover {
-    background-color: #F0F0F0;
+    background-color: var(--button-active-bg);
 
 }
 
 .button--active {
-    background-color: #F0F0F0;
+    background-color: var(--button-active-bg);
 }
 
 .categories__body {
