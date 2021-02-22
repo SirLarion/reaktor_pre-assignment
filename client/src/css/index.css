@@ -1,9 +1,10 @@
 html {
-    --button-bg: #F2F2F2;
-    --button-active-bg: #DFDFDF;
+    --button-bg: #E9E9F2;
+    --button-active-bg: #D0D0DF;
 }
 
 body {
+  background-color: ghostwhite;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

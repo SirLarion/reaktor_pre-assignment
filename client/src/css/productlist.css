@@ -1,5 +1,42 @@
-.list {}
+.list {
+    height: 100%;
+}
+
+.list__body {
+}
+
+
+
+.list__header {
+    box-sizing: border-box;
+    border: 1px solid grey;
+    border-left: none;
+    border-right: none;
+    display: grid;
+    grid: auto / 21% 23% 16% 10% 12% 18%;
+    position: sticky;
+    top: 6vh;
+    background-color: ghostwhite;
+}
+
+.list__attribute {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 1vmin 0 1vmin 3vmin;
+}
 
 .product {
-    padding: 1vh 0 1vh 0;
+    box-sizing: border-box;
+    border: 1px solid ghostwhite;
+    display: grid;
+    grid: auto / 21% 23% 16% 10% 12% 18%;
+}
+
+.product:hover {
+    border-bottom: 1px solid lightgrey;
+}
+
+.product__attribute {
+    overflow: ellipsis;
+    padding: 1vh 0 1vh 3vmin;
 }

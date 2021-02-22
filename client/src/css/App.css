@@ -5,12 +5,52 @@
 }
 
 .app__header {
-    padding: 2vh 0 0 20vw;
-    height: 12vh;
+    display: grid;
+    grid: auto / 33% 33% 33%;
+    align-items: center;
+    height: 10vh;
 }
 
 .app__body {
     height: 88vh;
 }
 
-.app__logo { width: 15vw; }
+.app__logo { 
+    width: 15vw; 
+    margin-left: 20vw;
+}
+
+.app__text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'DejaVu Serif';
+    font-size: 3vh;
+}
+
+#modal {
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    width: 100vw;
+    background-color: #F8F8FF55;
+    position: fixed;
+    z-index: 10;
+    top: 10vh;
+    left: 0;
+}
+
+.loading {
+    width: 12vw;
+    margin-top: 20vh;
+    animation-name: spinning;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes spinning {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}

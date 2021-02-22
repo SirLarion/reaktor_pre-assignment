@@ -4,14 +4,17 @@
     justify-content: center;
 }
 
-.categories__wrapper {
-    width: 60vw;
+.categories__header {
+    width: 100vw;
+    position: sticky;
+    top: 0;
+    background-color: ghostwhite;
 }
 
-.categories__header {
+.categories__nav {
+    padding: 1vh 0 1vh 20vw;
     display: flex;
     justify-content: flex-start;
-    margin-bottom: 0.5vmin;
 }
 
 .categories__button {
@@ -19,6 +22,7 @@
     margin-right: 0.5vmin;
     border-radius: 0.5vmin;
     background-color: var(--button-bg);
+    font-size: 1.7vh;
    -webkit-touch-callout: none; 
      -webkit-user-select: none; 
       -khtml-user-select: none; 
@@ -30,7 +34,6 @@
 
 .categories__button:hover {
     background-color: var(--button-active-bg);
-
 }
 
 .button--active {
@@ -38,7 +41,10 @@
 }
 
 .categories__body {
-    min-height: 100%;
+    width: 60vw;
+    min-height: 60%;
+    max-height: 80%;
     border: 1px grey solid;
-    padding: 1vh 3vh 1vh 3vh;
+    border-top: none;
+    margin-left: 20vw;
 }

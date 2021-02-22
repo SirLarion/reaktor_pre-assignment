@@ -13,11 +13,7 @@ app.use(cors());
 
 const categoryNames = ['gloves', 'facemasks', 'beanies'];
 
-let internalCache = {
-    gloves: [],
-    facemasks: [],
-    beanies: []
-}
+let internalCache = {}
 
 function parseManufacturers(products) {
     const manufacturers = new Set();
@@ -94,12 +90,18 @@ app.get('/:category/:sindex/:eindex', (request, response) => {
     const startIndex = request.params.sindex;
     const endIndex   = request.params.eindex;
 
-    const resData = internalCache[category].slice(startIndex, endIndex);
+    const resData = internalCache[category];
 
     response.header("Access-Control-Allow-Origin", "*");
 
-    if(resData.length && resData.length > 0) {
-        response.json(resData);
+    if(resData) {
+        const slice = resData.slice(startIndex, endIndex);
+        if(slice.length > 0) {
+            response.json(slice);
+        }
+        else {
+            response.status(204).end();
+        }
     }
     else {
         response.status(404).end();

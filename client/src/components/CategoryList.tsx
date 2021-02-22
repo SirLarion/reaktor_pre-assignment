@@ -5,36 +5,15 @@ import CategoryNav from './CategoryNav';
 
 import { getCategoryFromAPI } from '../utils/ProductServices';
 import { ProductType, CategoryType } from '../types';
+import { showModal, hideModal } from '../utils/modal';
 import { listDisplayLength } from '../utils/constants';
+
 
 import '../css/categorylist.css';
 
-function getNewCategory(newCategoryName: string): Promise<CategoryType> {
-    return new Promise((resolve, reject) => {
-        getCategoryFromAPI(newCategoryName, 0, listDisplayLength)
-            .then(res => {
-                const category: CategoryType = {
-                    name: newCategoryName,
-                    products: res
-                };
-                resolve(category);
-            })
-            .catch(res => {
-                reject(res);
-            });
-    });
-}
 
-function getMoreSameCategory(categoryName: string, start: number): Promise<ProductType[]> {
-    return new Promise((resolve, reject) => {
-        getCategoryFromAPI(categoryName, start, start+listDisplayLength)
-            .then(res => {
-                resolve(res);
-            })
-            .catch(res => {
-                reject(res);
-            });
-    });
+function getCategoryItems(categoryName: string, start: number) {
+    return getCategoryFromAPI(categoryName, start, start+listDisplayLength);
 }
 
 const CategoryList: React.FC = () => {
@@ -48,10 +27,12 @@ const CategoryList: React.FC = () => {
 
     useEffect(() => {
         console.log('Loading products...');
-        getNewCategory(activeCategory)
+        getCategoryItems(activeCategory, 0)
             .then(res => {
-                setProducts(res.products);
-            });
+                setProducts(res.data);
+            })
+            .catch(err => setTimeout(loadMoreProducts, 10000));
+
         const initialActive = document.getElementById(categoryNames[0])
         if(initialActive) {
             initialActive.className = 'categories__button button--active';
@@ -62,28 +43,42 @@ const CategoryList: React.FC = () => {
         event.preventDefault();
         const targetName = event.currentTarget.textContent;
         if(targetName && activeCategory !== targetName) {
+            showModal();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const list = document.getElementsByClassName('list__body')[0];
             // Change to empty product list before loading the new one
-            setHasProducts(true);
-            setProducts(initialProducts);
+            //setProducts(initialProducts);
 
             document.getElementsByClassName('button--active')[0].className = 'categories__button';
             event.currentTarget.className = 'categories__button button--active';
 
-            getNewCategory(targetName.toLowerCase())
-                .then(category => {
-                    setCategory(category.name);
-                    setProducts(category.products);
+            const targetLower = targetName.toLowerCase();
+            setCategory(targetLower);
+            
+            getCategoryItems(targetLower, 0)
+                .then(res => {
+                    hideModal();
+                    setHasProducts(true);
+                    setProducts(res.data);
+                })
+                .catch(err => {
+                    setHasProducts(false);
                 });
         }
     }
 
-    const handleLoadMoreProducts = (): void => {
-        getMoreSameCategory(activeCategory.toLowerCase(), products.length)
+    const loadMoreProducts = (): void => {
+        getCategoryItems(activeCategory.toLowerCase(), products.length)
             .then(res => {
-                setProducts(products.concat(res));
+                if(res.status == 200) {
+                    setProducts(products.concat(res.data));
+                }
+                else if(res.status == 204) {
+                    setHasProducts(false);
+                }
             })
             .catch(err => {
-                setHasProducts(false);
+                setTimeout(loadMoreProducts, 10000);
             });
     }
 
@@ -91,23 +86,25 @@ const CategoryList: React.FC = () => {
         <div className='categories'>
             <div className='categories__wrapper'>
                 <div className='categories__header'>
-                    { 
-                        categoryNames.map((name: string, i: number) => {
-                            return (
-                                <div key={i}>
-                                    <CategoryNav 
-                                        name={name}          
-                                        handleClick={handleCategoryChange}
-                                    />
-                                </div>
-                            );
-                        }) 
-                    }
+                    <div className='categories__nav'>
+                        { 
+                            categoryNames.map((name: string, i: number) => {
+                                return (
+                                    <div key={i}>
+                                        <CategoryNav 
+                                            name={name}          
+                                            handleClick={handleCategoryChange}
+                                        />
+                                    </div>
+                                );
+                            }) 
+                        }
+                    </div>
                 </div>
                 <div className='categories__body'>
                     <ProductList 
                         products={products} 
-                        loadMore={handleLoadMoreProducts}
+                        loadMore={loadMoreProducts}
                         hasMore={hasProducts}
                     />
                 </div>
