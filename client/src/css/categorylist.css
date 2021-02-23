@@ -41,9 +41,8 @@
 }
 
 .categories__body {
+    height: 100%;
     width: 60vw;
-    min-height: 60%;
-    max-height: 80%;
     border: 1px grey solid;
     border-top: none;
     margin-left: 20vw;

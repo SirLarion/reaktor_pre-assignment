@@ -8,7 +8,7 @@ interface Props {
 const CategoryNav: React.FC<Props> = ({name, handleClick}) => {
     return (
         <div 
-            id={name}
+            id={name.toLowerCase()}
             className='categories__button'
             onClick={handleClick}
         >

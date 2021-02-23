@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 
+import ListContainer from './ListContainer';
 import ProductList from './ProductList';
 import CategoryNav from './CategoryNav';
 
-import { getCategoryFromAPI } from '../utils/ProductServices';
-import { ProductType, CategoryType } from '../types';
+import { ProductType } from '../types';
+
+import { getCategoryFromAPI, getErrorMessage } from '../utils/ProductServices';
 import { showModal, hideModal } from '../utils/modal';
-import { listDisplayLength } from '../utils/constants';
+import { listDisplayLength, categoryNames } from '../utils/constants';
 
 
 import '../css/categorylist.css';
@@ -16,71 +18,84 @@ function getCategoryItems(categoryName: string, start: number) {
     return getCategoryFromAPI(categoryName, start, start+listDisplayLength);
 }
 
+function changeActiveCategoryButton(oldId: string, newId: string) {
+    const oldActive = document.getElementById(oldId);
+    const newActive = document.getElementById(newId);
+    if(oldActive && newActive) {
+        oldActive.className = 'categories__button';
+        newActive.className = 'categories__button button--active';
+    }
+}
+
 const CategoryList: React.FC = () => {
 
-    const categoryNames = ['Gloves', 'Facemasks', 'Beanies'];
     const initialProducts: ProductType[] = [];
 
+    const [errorFlag, setError] = useState('');
     const [activeCategory, setCategory] = useState(categoryNames[0].toLowerCase());
     const [products, setProducts] = useState(initialProducts);
     const [hasProducts, setHasProducts] = useState(true);
 
-    useEffect(() => {
-        console.log('Loading products...');
-        getCategoryItems(activeCategory, 0)
-            .then(res => {
-                setProducts(res.data);
-            })
-            .catch(err => setTimeout(loadMoreProducts, 10000));
 
-        const initialActive = document.getElementById(categoryNames[0])
-        if(initialActive) {
-            initialActive.className = 'categories__button button--active';
-        }
-    }, []);
+    const loadMoreProducts = (): void => {
+        getCategoryItems(activeCategory.toLowerCase(), products.length)
+            .then(res => {
+                if(res.status === 200) {
+                    setProducts(products.concat(res.data));
+                }
+                else if(res.status === 204) {
+                    setHasProducts(false);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                //setError(getErrorMessage(err.status));
+            });
+    }
 
     const handleCategoryChange = (event: React.MouseEvent): void => {
         event.preventDefault();
         const targetName = event.currentTarget.textContent;
-        if(targetName && activeCategory !== targetName) {
+        const activeName = activeCategory;
+        if(targetName && activeName !== targetName.toLowerCase()) {
             showModal();
+            setError('');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            const list = document.getElementsByClassName('list__body')[0];
-            // Change to empty product list before loading the new one
-            //setProducts(initialProducts);
-
-            document.getElementsByClassName('button--active')[0].className = 'categories__button';
-            event.currentTarget.className = 'categories__button button--active';
 
             const targetLower = targetName.toLowerCase();
+            changeActiveCategoryButton(activeName, targetLower);
+
             setCategory(targetLower);
             
             getCategoryItems(targetLower, 0)
                 .then(res => {
-                    hideModal();
                     setHasProducts(true);
                     setProducts(res.data);
                 })
                 .catch(err => {
                     setHasProducts(false);
-                });
+                    setProducts(initialProducts);
+                    setError(getErrorMessage(err.status));
+                })
+                .finally(hideModal);
         }
     }
 
-    const loadMoreProducts = (): void => {
-        getCategoryItems(activeCategory.toLowerCase(), products.length)
+    useEffect(() => {
+        console.log('Loading products...');
+        showModal();
+        const initialCategory = categoryNames[0].toLowerCase();
+        changeActiveCategoryButton(initialCategory, initialCategory);
+
+        getCategoryItems(initialCategory, 0)
             .then(res => {
-                if(res.status == 200) {
-                    setProducts(products.concat(res.data));
-                }
-                else if(res.status == 204) {
-                    setHasProducts(false);
-                }
+                setProducts(res.data);
             })
             .catch(err => {
-                setTimeout(loadMoreProducts, 10000);
-            });
-    }
+                setError(getErrorMessage(err.status));
+            })
+            .finally(hideModal);
+    }, []);
 
     return (
         <div className='categories'>
@@ -102,11 +117,14 @@ const CategoryList: React.FC = () => {
                     </div>
                 </div>
                 <div className='categories__body'>
-                    <ProductList 
-                        products={products} 
-                        loadMore={loadMoreProducts}
-                        hasMore={hasProducts}
-                    />
+                    <ListContainer>
+                        <ProductList 
+                            error={errorFlag}
+                            products={products} 
+                            loadMore={loadMoreProducts}
+                            hasMore={hasProducts}
+                        />
+                    </ListContainer>
                 </div>
             </div>
         </div>

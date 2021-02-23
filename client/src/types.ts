@@ -10,8 +10,3 @@ export interface ProductType {
     availability?: string;
 }
 
-export interface CategoryType {
-    name: string;
-    products: ProductType[];
-}
-

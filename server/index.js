@@ -81,7 +81,7 @@ function makeExternalAPIcall() {
                     });
             });
     }
-    setTimeout(makeExternalAPIcall, 300000); 
+    setTimeout(makeExternalAPIcall, 60000); 
 }
  
 app.get('/:category/:sindex/:eindex', (request, response) => {

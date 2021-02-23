@@ -1,11 +1,13 @@
 .list {
-    height: 100%;
+    min-height: 40%;
+    max-height: 80%;
 }
 
-.list__body {
+.list--error {
+    display: flex;
+    justify-content: center;
+    margin-top: 3vh;
 }
-
-
 
 .list__header {
     box-sizing: border-box;

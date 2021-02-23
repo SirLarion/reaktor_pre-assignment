@@ -32,7 +32,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.24748737"
      inkscape:cx="712.09188"
-     inkscape:cy="679.10962"
+     inkscape:cy="355.86081"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -66,7 +66,10 @@
        height="214.6913"
        x="-350.06052"
        y="97.666916"
-       ry="24.583479" />
+       ry="24.583479"
+       inkscape:export-filename="/home/sirlarion/repos/reaktor_pre-assignment/client/public/favicon.png"
+       inkscape:export-xdpi="3.7859008"
+       inkscape:export-ydpi="3.7859008" />
     <g
        aria-label="B"
        id="text857"
