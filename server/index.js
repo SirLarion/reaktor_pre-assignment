@@ -24,24 +24,30 @@ function parseManufacturers(products) {
 }
 
 function getProductData(category) {
-    return axios.get(`${URL}/products/${category}`);
+    return axios.get(`${URL}/products/${category}`)
+        .catch(err => {
+            console.log(`Product API unavailable for category: ${category}`);
+        });
 }
 
 function getAvailabilityData(manufacturers) {
     const resPromises = [];
 
     manufacturers.forEach(manu => {
-        const res = axios.get(`${URL}/availability/${manu}`);
+        const res = axios.get(`${URL}/availability/${manu}`)
+            .catch(err => {
+                console.log(`Availability API unavailable for manufacturer: ${manu}`);
+            });
         resPromises.push(res);
     });
 
     return Promise.all(resPromises)
+
 }
 
 /* Get avalability of products corresponding to each manufacturer in 'manufacturers' 
  * and merge with product data */
 function joinAPIdata(products, manufacturers) {
-    // TODO: Rejection?
     return new Promise((resolve, reject) => {
         let joinedData = [];
         let availabilities = new Map();
@@ -55,8 +61,7 @@ function joinAPIdata(products, manufacturers) {
                         dataPoints.forEach(d => availabilities.set(d['id'].toLowerCase(), d['DATAPAYLOAD']));
                     }
                     catch(err) {
-                        // TODO: Better error response
-                        //console.log(err);
+                        console.log('Availability data not found');
                     }
                 });
                 joinedData = products.map(product => {
@@ -73,13 +78,16 @@ function makeExternalAPIcall() {
         const category = categoryNames[i];
         getProductData(category)
             .then(res => {
-                const products = res.data;
-                const manufacturers = parseManufacturers(products);
-                joinAPIdata(products, manufacturers)
-                    .then(data => {
-                        internalCache[category] = data;
-                    });
-            });
+                try {
+                    const products = res.data;
+                    const manufacturers = parseManufacturers(products);
+                    joinAPIdata(products, manufacturers)
+                        .then(data => {
+                            internalCache[category] = data;
+                        })
+                }
+                catch(err) {}
+            })
     }
     setTimeout(makeExternalAPIcall, 60000); 
 }

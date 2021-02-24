@@ -1,19 +1,20 @@
 import axios from 'axios';
 
-const local = 'http://192.168.1.61:3001';
+const local = 'http://localhost:3001';
 
+// Send Axios GET request to API gateway server
 export const getCategoryFromAPI = (category: string, start: number, end: number) => {
     const url = `${local}/${category}/${start}/${end}`;
-
-    console.log(`Sending GET to ${url}`);
-    const req = axios.get(url);
-
-    return req; 
+    return axios.get(url);
 }
 
+// Return an error message depending on what status code the
+// error in question has. If there's no status code, the gateway
+// server is offline
 export const getErrorMessage = (code: number | undefined): string => {
-    if(code) {
-        return `Connecting to server failed: ${code}`;
-    }
-    else return 'API gateway server offline';
+    let message = '';
+    if(code) message = `Connecting to server failed: ${code}`;
+    else message = 'API gateway server offline';
+
+    return message;
 }

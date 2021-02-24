@@ -1,10 +1,10 @@
-import '../css/categorylist.css';
-
 interface Props {
     name: string;
     handleClick: (event: React.MouseEvent) => void;
 }
 
+//===================================================================/
+// Button component for CategoryContainer
 const CategoryNav: React.FC<Props> = ({name, handleClick}) => {
     return (
         <div 
@@ -16,5 +16,7 @@ const CategoryNav: React.FC<Props> = ({name, handleClick}) => {
         </div>
     );
 }
+
+//===================================================================/
 
 export default CategoryNav;

@@ -1,5 +1,7 @@
 import { ProductType } from '../types';
 
+// Helper; parses the availability data of a product if the data
+// is available. If it isn't, returns an error message
 function parseAvailability(raw: string | undefined): string {
     let availability = 'error: 404';
     if(raw) {
@@ -10,6 +12,10 @@ function parseAvailability(raw: string | undefined): string {
     return availability;
 }
 
+//===================================================================/
+/*
+ * Displays a single ProductType as an array of its attributes
+ */
 const Product: React.FC<{product: ProductType}> = ({product}) => {
     const nameRaw: string = product.name;
     const availability = parseAvailability(product.availability);
@@ -36,5 +42,7 @@ const Product: React.FC<{product: ProductType}> = ({product}) => {
         </div>
     );
 }
+
+//===================================================================/
 
 export default Product;

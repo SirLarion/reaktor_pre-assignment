@@ -1,11 +1,17 @@
 import React from 'react';
 
-import CategoryList from './components/CategoryList';
+import CategoryContainer from './components/CategoryContainer';
 
 import './css/App.css';
 import logo from './resources/clothes_brand.svg';
 import loading from './resources/loading.svg'
 
+
+//===================================================================/
+/*
+ * Main App. Clothes storage listing for 'Clothes Brand' made
+ * as a pre-assignment for Reaktor 2021 summer job application
+ */
 const ClothesListingApp: React.FC = () => {
     return (
         <div className='app'>
@@ -18,7 +24,7 @@ const ClothesListingApp: React.FC = () => {
                 <div className='app__text noselect'>Storage</div>
             </div>
             <div className='app__body'>
-                <CategoryList />
+                <CategoryContainer />
             </div>
             <div id='modal'>
                 <img className='loading' src={loading} alt='Loading...'/>
@@ -26,5 +32,6 @@ const ClothesListingApp: React.FC = () => {
         </div>
     );
 }
+//===================================================================/
 
 export default ClothesListingApp;
