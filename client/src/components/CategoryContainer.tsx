@@ -5,18 +5,12 @@ import ProductList from './ProductList';
 import CategoryNav from './CategoryNav';
 
 import { categoryNames } from '../utils/constants';
+import { 
+    changeActiveCategoryButton,
+    scrollPageToTop
+} from '../utils/tools';
 
 import '../css/categorycontainer.css';
-
-// Helper; changes which of the category nav buttons is displayed as active
-function changeActiveCategoryButton(oldId: string, newId: string) {
-    const oldActive = document.getElementById(oldId);
-    const newActive = document.getElementById(newId);
-    if(oldActive && newActive) {
-        oldActive.className = 'categories__button';
-        newActive.className = 'categories__button button--active';
-    }
-}
 
 //===================================================================/
 /*
@@ -38,14 +32,7 @@ const CategoryContainer: React.FC = () => {
 
         // Do nothing if the button for the currently active category was pressed
         if(targetName && activeName !== targetName.toLowerCase()) {
-
-            // Scroll back to top: smoothly if the page hadn't been scrolled
-            // much, otherwise snap
-            if(document.documentElement.scrollTop < 3 * window.innerHeight) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-            else window.scrollTo(0, 0);
-
+            scrollPageToTop();
             const targetLower = targetName.toLowerCase();
             changeActiveCategoryButton(activeName, targetLower);
 

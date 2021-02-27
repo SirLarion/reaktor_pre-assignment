@@ -38,13 +38,14 @@ const ProductList: React.FC<{activeCategory: string}> = ({activeCategory}) => {
     // based on API responses
     const [errorMessage, setError] = useState('');
 
-    // All the products that are currently kept in memory on the client
+    // All the products that are currently kept in memory on the client;
     // 100 products from the active category by default, more if the list
     // is scrolled further down
     const [products, setProducts] = useState(initialProducts);
     const [hasProducts, setHasProducts] = useState(true);
 
-
+    // Callback for InfiniteScroller to load more products when the page has 
+    // been scrolled over a certain threshold
     const loadMoreProducts = (): void => {
         getCategoryItems(activeCategory, products.length)
             .then(res => {
@@ -72,7 +73,14 @@ const ProductList: React.FC<{activeCategory: string}> = ({activeCategory}) => {
             .catch(err => {
                 setHasProducts(false);
                 setProducts(initialProducts);
-                setError(getErrorMessage(err.response.status));
+                // If gateway API is offline, 'err' is undefined for some
+                // reason
+                try {
+                    setError(getErrorMessage(err.response.status));
+                }
+                catch {
+                    setError(getErrorMessage(undefined));
+                }
             })
             .finally(hideModal);
     }, [activeCategory]);

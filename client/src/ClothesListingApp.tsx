@@ -26,8 +26,12 @@ const ClothesListingApp: React.FC = () => {
             <div className='app__body'>
                 <CategoryContainer />
             </div>
-            <div id='modal'>
-                <img className='loading' src={loading} alt='Loading...'/>
+            <div id='modal' style={{display:'none'}}>
+                <img 
+                    className='loading' 
+                    src={loading} 
+                    alt='Loading...'
+                />
             </div>
         </div>
     );
