@@ -20,6 +20,7 @@ code {
     monospace;
 }
 
+/* Easily disable selection */
 .noselect {
   -webkit-touch-callout: none; 
     -webkit-user-select: none; 

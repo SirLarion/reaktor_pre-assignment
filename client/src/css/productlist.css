@@ -1,8 +1,8 @@
 .list {
     min-height: 40%;
-    max-height: 80%;
 }
 
+/* Error message */
 .list--error {
     display: flex;
     justify-content: center;
@@ -10,6 +10,7 @@
     margin-top: 3vh;
 }
 
+/* Header displaying attribute names */
 .list__header {
     box-sizing: border-box;
     border: 1px solid grey;
@@ -23,12 +24,14 @@
     background-color: ghostwhite;
 }
 
+/* A single product attribute in list__header */
 .list__attribute {
     box-sizing: border-box;
     height: 100%;
     padding: 1vmin 0 1vmin 3vmin;
 }
 
+/* A single product, follows the format of list__header */
 .product {
     box-sizing: border-box;
     border: 1px solid ghostwhite;
@@ -37,11 +40,11 @@
     grid: auto / 21% 23% 16% 10% 12% 18%;
 }
 
+/* Underline a product when hovering over it */
 .product:hover {
     border-bottom: 1px solid lightgrey;
 }
 
 .product__attribute {
-    overflow: ellipsis;
     padding: 1vh 0 1vh 3vmin;
 }

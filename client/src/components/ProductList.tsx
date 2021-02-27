@@ -89,7 +89,7 @@ const ProductList: React.FC<{activeCategory: string}> = ({activeCategory}) => {
     if(errorMessage !== '') {
         return (
             <div className='list__body'>
-                <div role='error' className='list--error'>
+                <div className='list--error'>
                     { errorMessage }
                 </div>
             </div>

@@ -4,6 +4,7 @@
     justify-content: flex-start;
 }
 
+/* Main header with logo and text */
 .app__header {
     display: grid;
     grid: auto / 33% 33% 33%;
@@ -15,11 +16,13 @@
     height: 88vh;
 }
 
+/* 'Clothes Brand' logo */
 .app__logo { 
     width: 15vw; 
     margin-left: 20vw;
 }
 
+/* 'Storage' text on the top of the page */
 .app__text {
     display: flex;
     justify-content: center;
@@ -28,6 +31,7 @@
     font-size: 3vh;
 }
 
+/* Pop-up modal for displaying loading icon */
 #modal {
     justify-content: center;
     align-items: flex-start;
@@ -39,6 +43,7 @@
     left: 0;
 }
 
+/* Loading icon */
 .loading {
     width: 12vw;
     margin-top: 20vh;

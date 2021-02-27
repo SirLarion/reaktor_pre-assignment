@@ -1,5 +1,6 @@
 import { 
     act,
+    screen,
     render, 
     waitFor
 } from '@testing-library/react';
@@ -18,7 +19,7 @@ describe('<ProductList>', () => {
         const { container, getByText } = render(<ProductList activeCategory={'gloves'} />);
 
         // Wait until mock data has been loaded
-        const product = await waitFor(() => getByText('Kolem light'));
+        await waitFor(() => getByText('Kolem light'));
 
         expect(container.firstChild).toHaveClass('list__body');
     });
@@ -26,12 +27,11 @@ describe('<ProductList>', () => {
     it('should display an error message correctly on unsuccessful API call', async () => {
         const mock = new MockAdapter(axios);
         mock.onGet('http://localhost:3001/gloves/0/100').reply(404);
-        const { getByRole } = render(<ProductList activeCategory={'gloves'} />);
+        const { getByText } = render(<ProductList activeCategory={'gloves'} />);
 
         // Wait until error has been caught 
-        const error = await waitFor(() => getByRole('error'));
-
-        expect(error).toHaveTextContent(/.404/);
+        const error = await waitFor(() => getByText('Connecting to server failed: 404'));
+        expect(error).toHaveClass('list--error');
     });
 
 });
