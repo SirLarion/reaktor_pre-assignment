@@ -4,8 +4,7 @@ import ListContainer from './ListContainer';
 import ProductList from './ProductList';
 import CategoryNav from './CategoryNav';
 
-import { listDisplayLength, categoryNames } from '../utils/constants';
-import { ProductType } from '../types';
+import { categoryNames } from '../utils/constants';
 
 import '../css/categorycontainer.css';
 
@@ -55,7 +54,10 @@ const CategoryContainer: React.FC = () => {
     }
 
     // Make the button of the initial category active
-    useEffect(() => changeActiveCategoryButton(activeCategory, activeCategory), []);
+    useEffect(() => {
+        const initialCategory = categoryNames[0].toLowerCase();
+        changeActiveCategoryButton(initialCategory, initialCategory)
+    }, []);
 
     return (
         <div className='categories'>

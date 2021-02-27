@@ -3,9 +3,9 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import Product from './Product';
 
-import { showModal, hideModal } from '../utils/modal';
-import { getCategoryFromAPI, getErrorMessage } from '../utils/ProductServices';
-import { listDisplayLength } from '../utils/constants';
+import { getCategoryFromAPI } from '../utils/ProductServices';
+import { showModal, hideModal, getErrorMessage } from '../utils/tools';
+import { listDisplayLength, initialProducts } from '../utils/constants';
 
 import { ProductType } from '../types';
 
@@ -34,14 +34,9 @@ function toProduct(product: ProductType, index: number) {
  */
 const ProductList: React.FC<{activeCategory: string}> = ({activeCategory}) => {
 
-    const initialProducts: ProductType[] = [];
-
     // Maintains an error message displayed inside the component
     // based on API responses
     const [errorMessage, setError] = useState('');
-
-    // The category of the products currently displayed
-    const [productsCategory, setCategory] = useState(activeCategory);
 
     // All the products that are currently kept in memory on the client
     // 100 products from the active category by default, more if the list
@@ -51,7 +46,7 @@ const ProductList: React.FC<{activeCategory: string}> = ({activeCategory}) => {
 
 
     const loadMoreProducts = (): void => {
-        getCategoryItems(productsCategory.toLowerCase(), products.length)
+        getCategoryItems(activeCategory, products.length)
             .then(res => {
                 if(res.status === 200) {
                     setProducts(products.concat(res.data));
@@ -63,27 +58,11 @@ const ProductList: React.FC<{activeCategory: string}> = ({activeCategory}) => {
             .catch(err => setError(getErrorMessage(err.status)));
     }
 
-    // Attempt to load the initial products 
+    // Attempt to load the initial products of a category
+    // when component is first rendered and when activeCategory is changed
     useEffect(() => {
         setError('');
         showModal();
-
-        getCategoryItems(activeCategory, 0)
-            .then(res => {
-                setProducts(res.data);
-            })
-            .catch(err => {
-                setError(getErrorMessage(err.response.status));
-            })
-            .finally(hideModal);
-    }, []);
-
-    // Check if activeCategory has been changed. If it has, load new list
-    // of products
-    if(productsCategory !== activeCategory) {
-        setError('');
-        showModal();
-        setCategory(activeCategory);
 
         getCategoryItems(activeCategory, 0)
             .then(res => {
@@ -96,13 +75,13 @@ const ProductList: React.FC<{activeCategory: string}> = ({activeCategory}) => {
                 setError(getErrorMessage(err.response.status));
             })
             .finally(hideModal);
-    }
+    }, [activeCategory]);
 
     // Display error instead of empty list if loading products failed
     if(errorMessage !== '') {
         return (
             <div className='list__body'>
-                <div className='list--error'>
+                <div role='error' className='list--error'>
                     { errorMessage }
                 </div>
             </div>

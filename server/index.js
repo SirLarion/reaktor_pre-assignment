@@ -1,6 +1,7 @@
 const axios = require('axios');
 const express = require('express'); 
 const cors = require('cors');
+const path = require('path');
 
 const config = require('./utils/config');
 
@@ -10,6 +11,9 @@ const PORT = config.PORT;
 const URL = config.URL;
 
 app.use(cors());
+
+app.use(express.static(path.join(__dirname, 'build')));
+
 
 const categoryNames = ['gloves', 'facemasks', 'beanies'];
 
@@ -115,6 +119,11 @@ app.get('/:category/:sindex/:eindex', (request, response) => {
         response.status(404).end();
     }
 });
+
+app.get('/reaktor', function(req,res) {
+	res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
