@@ -93,7 +93,7 @@ describe('<Product>', () => {
             manufacturer: ''
         }
         render(<Product product={testProduct} />);
-        expect(screen.getByText('error: 404')).toHaveClass('product__attribute');
+        expect(screen.getByText('ERROR: not found')).toHaveClass('product__attribute');
     });
 
     it('should work with defined availability', () => {

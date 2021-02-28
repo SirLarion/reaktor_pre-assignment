@@ -6,7 +6,8 @@ const headerItems = ['Name', 'ID', 'Colors', 'Price', 'Manufacturer', 'Availabil
 /*
  * Container for the list of products and a header containing the names
  * of each attribute of the products. The actual list (see ProductList)
- * is implemented as a child
+ * is implemented as a child so communication between CategoryContainer
+ * and ProductList is simpler
  */
 const ListContainer: React.FC = ({children}) => {
     return (

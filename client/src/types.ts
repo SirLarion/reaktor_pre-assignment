@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface ProductType {
     id: string;
     type: string;

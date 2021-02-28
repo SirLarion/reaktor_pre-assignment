@@ -5,6 +5,7 @@ import ProductList from './ProductList';
 import CategoryNav from './CategoryNav';
 
 import { categoryNames } from '../utils/constants';
+
 import { 
     changeActiveCategoryButton,
     scrollPageToTop

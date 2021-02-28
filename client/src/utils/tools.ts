@@ -3,7 +3,7 @@
 // server is offline
 export const getErrorMessage = (code: number | undefined): string => {
     let message = '';
-    if(code) message = `Connecting to server failed: ${code}`;
+    if(code) message = `Getting storage data failed: ${code}`;
     else message = 'API gateway server offline';
 
     return message;

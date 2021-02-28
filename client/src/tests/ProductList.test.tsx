@@ -30,7 +30,7 @@ describe('<ProductList>', () => {
         const { getByText } = render(<ProductList activeCategory={'gloves'} />);
 
         // Wait until error has been caught 
-        const error = await waitFor(() => getByText('Connecting to server failed: 404'));
+        const error = await waitFor(() => getByText('Getting storage data failed: 404'));
         expect(error).toHaveClass('list--error');
     });
 

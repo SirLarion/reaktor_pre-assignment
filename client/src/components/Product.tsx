@@ -5,7 +5,7 @@ import { ProductType } from '../types';
 // an error message if the data is formatted wrong.
 // Correct format has "<INSTOCKVALUE>{someValue}</INSTOCKVALUE>"
 function parseAvailability(raw: string | undefined): string {
-    let availability = 'error: 404';
+    let availability = 'ERROR: not found';
     if(raw) {
         try {
             const start = raw.indexOf('<INSTOCKVALUE>') +14;

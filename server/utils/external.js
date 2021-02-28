@@ -6,9 +6,10 @@ const URL = config.URL;
 
 // Send GET request for products of 'category'
 function getProductData(category) {
+
     return axios.get(`${URL}/products/${category}`)
         .catch(err => {
-            console.log(`Product API unavailable for category: ${category}`);
+            console.error(`Product API unavailable for category: ${category}`);
         });
 }
 

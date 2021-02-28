@@ -55,7 +55,6 @@ function joinAPIdata(products, manufacturers) {
  * make requests for categories, we can return data from the cache
  */
 function makeExternalAPIcall() {
-    let internalCache = cache.getCache();
     for(i = 0; i < categoryNames.length; i++) {
         const category = categoryNames[i];
         // Get products of 'category'
@@ -68,14 +67,12 @@ function makeExternalAPIcall() {
                     // combine with the corresponding products
                     joinAPIdata(products, manufacturers)
                         .then(data => {
-                            internalCache[category] = data;
+                            cache.setCache(category, data);
                         })
                 }
                 catch(err) {}
-            })
+            });
     }
-    cache.setCache(internalCache);
-
     // Update the internal cache every minute
     setTimeout(makeExternalAPIcall, 60000); 
 }

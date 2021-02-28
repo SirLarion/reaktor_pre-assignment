@@ -17,12 +17,16 @@ const juuran    = require('../utils/__fixtures__/mockJuuran.json');
 
 const joined    = require('../utils/__fixtures__/mockJoined.json');
 
-
 // Helper; checks if two sets are equal (i.e. the sets contain each other)
 function setEquality(setA, setB) {
     if (setA.size !== setB.size) return false;
     for (let a of setA) if (!setB.has(a)) return false;
     return true;
+}
+
+// Helper; checks if two datapoints are equal
+function dataEquality(dpA, dpB) {
+    return JSON.stringify(dpA) === JSON.stringify(dpB);
 }
 
 const productData = {
@@ -45,8 +49,8 @@ let mockCache = {}
 
 const manufacturers = new Set(['ippal', 'abiplos', 'okkau', 'umpante', 'niksleh', 'juuran']);
 
-/* Mock API calls to control the data output */
 
+/* Mock API calls to control the data output */
 jest.spyOn(external, 'getAvailabilityData')
     .mockImplementation(() => {
         return new Promise((resolve, reject) => {
@@ -66,13 +70,14 @@ jest.spyOn(external, 'getProductData')
         resolve({ data: productData[category] });
     }));
 
-/* Mock calls to cache to control its state */ 
 
+
+/* Mock calls to cache to control its state */ 
 jest.spyOn(cache, 'getCache')
     .mockImplementation(() => mockCache);
 
 jest.spyOn(cache, 'setCache')
-    .mockImplementation(newCache => mockCache = newCache);
+    .mockImplementation((property, value) => mockCache[property] = value);
 
 
 
@@ -92,15 +97,39 @@ describe('joinAPIdata', () => {
         const testJoined = await handlers.joinAPIdata(productData['gloves'], manufacturers);
         const realJoined = joined['gloves'];
         let flag = true;
-        for(let i = 0; i < 100; i++) {
-            flag = flag && JSON.stringify(testJoined[i]) === JSON.stringify(realJoined[i]);
+        for(let i = 0; i < 1000; i++) {
+            flag = flag && dataEquality(testJoined[i], realJoined[i]);
         }
         expect(flag).toEqual(true);
     });
 });
 
 describe('makeExternalAPIcall', () => {
-    it('should populate the cache correctly', () => {
-        
+    it('should create a correct size cache', async () => {
+        const realCache = joined;
+        handlers.makeExternalAPIcall();
+        await new Promise((resolve, reject) => setTimeout(resolve, 100));
+
+        categoryNames.forEach(cat => {
+            expect(mockCache[cat].length).toEqual(realCache[cat].length);
+        });
+    });
+
+    it('should populate the cache correctly', async () => {
+        const realCache = joined;
+        handlers.makeExternalAPIcall();
+        await new Promise((resolve, reject) => setTimeout(resolve, 100));
+
+        let flag = true;
+
+        categoryNames.forEach(cat => {
+            for(let i = 0; i < 1000; i++) {
+                flag = flag && dataEquality(realCache[cat][i], mockCache[cat][i]);
+            }
+        });
+
+        expect(flag).toEqual(true);
     });
 });
+
+// END TESTS //

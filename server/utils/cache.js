@@ -3,7 +3,7 @@
 let internalCache = {}
 
 function getCache() { return internalCache; }
-function setCache(cacheObject) { internalCache = cacheObject; }
+function setCache(property, value) { internalCache[property] = value; }
 
 module.exports = {
     getCache,
