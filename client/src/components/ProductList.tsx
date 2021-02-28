@@ -56,7 +56,18 @@ const ProductList: React.FC<{activeCategory: string}> = ({activeCategory}) => {
                     setHasProducts(false);
                 }
             })
-            .catch(err => setError(getErrorMessage(err.status)));
+            .catch(err => {
+                setHasProducts(false);
+                setProducts(initialProducts);
+                // If gateway API is offline, 'err' is undefined for some
+                // reason
+                try {
+                    setError(getErrorMessage(err.response.status));
+                }
+                catch {
+                    setError(getErrorMessage(undefined));
+                }
+            })
     }
 
     // Attempt to load the initial products of a category
